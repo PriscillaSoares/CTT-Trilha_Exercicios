@@ -13,6 +13,4 @@ public class TrocaDeVariaveis {
 	    System.out.println("O valor depois da troca da minha variável Y é: " + y);
 	    System.out.println("O valor depois da troca da minha variável Z é: " + z);
 	  } 
-	}
-
-
+}
