@@ -6,49 +6,74 @@ import java.util.Scanner;
 
 public class Banco {
 
-	public void adicionarConta(ContaBancaria conta) {
+	String senhaGerente = "G3r3nt3";
+	String nomeDoBanco = "Alternative Bank";
 
-		Scanner sc = new Scanner(System.in);
+	public ContaBancaria adicionarConta() {
 
 		Random random = new Random();
 
-		conta.setAgencia(35521);
+		ContaBancaria contaBancaria = null;
 
-		int numeroConta = random.ints(1000, 9999).findFirst().getAsInt();
-		conta.setNumero(numeroConta);
+		// Scanner sc = new Scanner(System.in);
+		Scanner sc = Main.sc;
 
-		conta.setData(
-				LocalDate.now().getDayOfMonth() + "/" + LocalDate.now().getMonth() + "/" + LocalDate.now().getYear());
+		int numeroAgencia = 3552;
 
-		System.out.println("Digite o seu nome: ");
-		String nomeCliente = sc.next();
-		conta.setCliente(nomeCliente);
-
-		System.out.println("Digite saldo inicial: ");
-		double saldoInicial = sc.nextDouble();
-		conta.setSaldo(saldoInicial);
-
-		System.out.println("Informe o tipo de conta [1-Conta Corrente] [2-Conta PoupanÃ§a] : ");
+		System.out.println("Informe o tipo de conta [1-Conta Corrente] [2-Conta Poupança]: ");
 		int tipoConta = sc.nextInt();
 
 		switch (tipoConta) {
 		case 1:
-			conta.setTipoConta("Conta Corrente");
-			System.out.println("Digite o limite: ");
+
 			ContaCorrente contaCorrente = new ContaCorrente();
-			contaCorrente.setCliente(conta.getCliente());
-			contaCorrente.setAgencia(conta.getAgencia());
-			contaCorrente.setNumero(conta.getNumero());
-			contaCorrente.setData(conta.getData());
-			contaCorrente.setSaldo(conta.getSaldo());
+
+			contaCorrente.setTipoConta("Conta Corrente");
+			contaCorrente.setAgencia(numeroAgencia);
+
+			System.out.println("Digite o seu nome: ");
+			contaCorrente.setCliente(sc.next());
+
+			contaCorrente.setNumero(random.ints(1000, 9999).findFirst().getAsInt());
+
+			contaCorrente.setData(LocalDate.now().getDayOfMonth() + "/" + LocalDate.now().getMonth() + "/"
+					+ LocalDate.now().getYear());
+
+			System.out.println("Digite saldo inicial: ");
+			contaCorrente.setSaldo(sc.nextDouble());
+
+			System.out.println("Digite o limite: ");
 			contaCorrente.setLimite(sc.nextDouble());
+
+			System.out.println("Saldo atual: " + contaCorrente.getSaldo());
+
+			contaBancaria = contaCorrente;
 			break;
 
 		case 2:
-			conta.setTipoConta("Conta PoupanÃ§a");
+
+			ContaPoupanca contaPoupanca = new ContaPoupanca();
+
+			contaPoupanca.setTipoConta("Conta Poupança");
+			contaPoupanca.setAgencia(numeroAgencia);
+
+			System.out.println("Digite o seu nome: ");
+			contaPoupanca.setCliente(sc.next());
+
+			contaPoupanca.setNumero((random.ints(1000, 9999).findFirst().getAsInt()));
+
+			contaPoupanca.setData(LocalDate.now().getDayOfMonth() + "/" + LocalDate.now().getMonthValue() + "/"
+					+ LocalDate.now().getYear());
+
+			System.out.println("Digite o saldo inicial: ");
+			contaPoupanca.setSaldo(sc.nextDouble());
+
 			System.out.println("Informe o total de dias de Rendimento: ");
-			ContaPoupanca contaPoupanca = (ContaPoupanca) conta;
 			contaPoupanca.setDiaRendimento(sc.nextInt());
+
+			contaPoupanca.calcularNovoSaldo();
+
+			contaBancaria = contaPoupanca;
 			break;
 
 		default:
@@ -56,7 +81,104 @@ public class Banco {
 
 		}
 
-		sc.close();
+		// sc.close();
+		return contaBancaria;
+
+	}
+
+	public void exibirMenu(ContaBancaria conta) {
+
+		Scanner in = Main.sc;
+		int opcao;
+
+		do {
+
+			System.out.println("Menu Conta Bancaria");
+			System.out.println("[1]-Listar Extrato");
+			System.out.println("[2]-Efetuar Saque");
+			System.out.println("[3]-Efetuar Deposito");
+			System.out.println("[4]-Adicionar Limite Cheque Especial");
+			System.out.println("[5]-Encerrar Conta");
+			System.out.println("[0]-Sair");
+			System.out.println("");
+
+			opcao = in.nextInt();
+
+			switch (opcao) {
+			case 1:
+				System.out.println("Saldo atual: " + conta.getSaldo());
+				if (!conta.listaDeTransacoes.isEmpty()) {
+					System.out.println("Transações efetuadas nesta conta: ");
+					for (String transacao : conta.listaDeTransacoes) {
+						System.out.println(transacao);
+					}
+				} else {
+					System.out.println("Ainda não consta nenhuma transação nesta conta.");
+				}
+
+				break;
+			case 2:
+				System.out.println("Digite o valor do saque: ");
+				conta.sacar(in.nextDouble());
+				break;
+			case 3:
+				System.out.println("Digite o valor do deposito: ");
+				conta.depositar(in.nextDouble());
+				break;
+			case 4:
+				Scanner sc = Main.sc;
+				if (conta.tipoConta == "Conta Corrente") {
+					System.out.println("Digite a senha para efetuar esta operação: ");
+					String senha = sc.next();
+					if (senha.equals(senhaGerente)) {
+						System.out.println("Digite o novo limite da conta: ");
+						double novoLimite = sc.nextDouble();
+						conta.setLimite(novoLimite);
+					} else {
+						System.out.println("Senha incorreta!");
+					}
+
+				} else {
+					System.out.println("Menu invalido para Conta Poupança");
+				}
+				break;
+			case 5:
+				Scanner sc5 = Main.sc;
+				if (conta.getSaldo() == 0) {
+					System.out.println("Digite a senha para efetuar esta operação: ");
+					String senha = sc5.next();
+					if (senha.equals(senhaGerente)) {
+						System.out.println("Conta encerrada!");
+						opcao = 0;
+					} else {
+						System.out.println("Senha incorreta!");
+					}
+
+				} else {
+					System.out.println("O saldo desta conta é" + conta.getSaldo()
+							+ " e, portanto, não pode ser encerrada. O saldo deve ser 0.00 para prosseguir com o encerramento.");
+				}
+
+				// conta.encerrarConta();
+
+				break;
+			case 0:
+				System.out.println("Sistema sendo encerrado...");
+				break;
+
+//				// case 10: System.exit(0);
+//			default:
+//				if (opcao != 0)
+//					System.out.println("Opção inválida");
+//				break;
+//			}
+//
+//			System.out.println("");
+
+			}
+
+		} while (opcao != 0);
+
 	}
 
 }

@@ -1,5 +1,7 @@
 package exerBank;
 
+//import java.util.Calendar;
+
 public class ContaPoupanca extends ContaBancaria {
 
 	private int diaRendimento;
@@ -7,7 +9,7 @@ public class ContaPoupanca extends ContaBancaria {
 
 	public void calcularNovoSaldo() {
 		super.saldo = (saldo + (taxaRendimento * diaRendimento));
-		System.out.println("Seu saldo acrescido a taxa de rendimento Ã©: " + saldo);
+		System.out.println("Seu saldo acrescentado a taxa de rendimento é: " + saldo);
 	}
 
 	public int getDiaRendimento() {
@@ -26,4 +28,14 @@ public class ContaPoupanca extends ContaBancaria {
 		this.taxaRendimento = taxaRendimento;
 	}
 
+//	public boolean calcularNovoSaldo(double taxaRendimento) {
+//
+//		Calendar hoje = Calendar.getInstance();
+//
+//		if (diaRendimento == hoje.get(Calendar.DAY_OF_MONTH)) {
+//			super.setSaldo(this.getSaldo() + (this.getSaldo() * taxaRendimento));
+//			return true;
+//		}
+//		return false;
+//	}
 }

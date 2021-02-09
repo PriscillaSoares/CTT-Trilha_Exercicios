@@ -1,5 +1,7 @@
 package exerBank;
 
+import java.util.ArrayList;
+
 public class ContaBancaria {
 
 	protected String data;
@@ -8,19 +10,23 @@ public class ContaBancaria {
 	protected double saldo;
 	protected String cliente;
 	protected String tipoConta;
+	protected ArrayList<String> listaDeTransacoes = new ArrayList<String>();
+	// private boolean contaAtiva;
 
 	public void sacar(double valor) {
 		if (valor > this.saldo) {
 			System.out.println("Saldo insuficiente para realizar o saque");
 		} else {
 			this.saldo = this.saldo - valor;
-			System.out.println("O saldo disponÃ­vel Ã©: " + this.saldo);
+			System.out.println("O saldo disponivel é: " + this.saldo);
+			listaDeTransacoes.add("Saque no valor de " + valor);
 		}
 	}
 
 	public void depositar(double valor) {
 		this.saldo = this.saldo + valor;
-		System.out.println("O saldo disponÃ­vel Ã©: " + this.saldo);
+		System.out.println("O saldo disponivel é: " + this.saldo);
+		listaDeTransacoes.add("Deposito no valor de " + valor);
 	}
 
 	public int getAgencia() {
@@ -71,4 +77,29 @@ public class ContaBancaria {
 		this.tipoConta = tipoConta;
 	}
 
+	public void setLimite(double limite) {
+
+	}
+
+//	protected void contaAtiva() {
+//		if (!this.contaAtiva) {
+//			System.out.println("Não é possível fazer movimentações em um conta inativa");
+//		}
+//	}
+//
+//	public void encerrarConta() {
+//
+//		this.contaAtiva();
+//		if (this.contaAtiva) {
+//			if (saldo > 0) {
+//				System.out.println("Você deve sacar o dinheiro antes de encerrar sua conta");
+//			} else if (this.saldo < 0) {
+//				System.out.println("Você não pode encerrar a conta con saldo negativo");
+//			} else {
+//				System.out.println("Você encerrou sua conta");
+//				contaAtiva = false;
+//
+//			}
+//		}
+//	}
 }
